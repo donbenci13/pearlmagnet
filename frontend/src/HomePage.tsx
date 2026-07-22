@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { fetchLgus } from './api';
 import type { LguProfile } from './api';
 import LguCard from './LguCard';
@@ -68,9 +69,14 @@ export default function HomePage() {
 
       {/* LGU Grid */}
       <div style={{ maxWidth: 1200, margin: '0 auto', padding: '40px 24px' }}>
-        <h2 style={{ fontSize: 22, fontWeight: 700, color: '#111827', margin: '0 0 24px' }}>
-          Profiled LGUs
-        </h2>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
+          <h2 style={{ fontSize: 22, fontWeight: 700, color: '#111827', margin: 0 }}>
+            Profiled LGUs
+          </h2>
+          <Link to="/signals" style={{ fontSize: 14, color: '#059669', textDecoration: 'none', fontWeight: 500 }}>
+            View all signals →
+          </Link>
+        </div>
         {loading ? (
           <p style={{ color: '#9ca3af' }}>Loading LGUs...</p>
         ) : (

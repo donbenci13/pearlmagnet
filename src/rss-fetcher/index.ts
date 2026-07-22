@@ -33,6 +33,22 @@ const TARGET_LGUS: LguSite[] = [
   { slug: 'baguio', name: 'Baguio', rssUrl: 'https://baguio.gov.ph/feed/', website: 'https://baguio.gov.ph', region: 'CAR' },
   { slug: 'tagaytay', name: 'Tagaytay', rssUrl: '', website: 'https://tagaytay.gov.ph', region: 'CALABARZON' },
   { slug: 'clark-pampanga', name: 'Clark / Pampanga', rssUrl: 'https://pampanga.gov.ph/feed/', website: 'https://pampanga.gov.ph', region: 'Central Luzon' },
+  { slug: 'subic-olongapo', name: 'Subic / Olongapo', rssUrl: '', website: 'https://olongapo.gov.ph', region: 'Central Luzon' },
+  { slug: 'puerto-princesa', name: 'Puerto Princesa', rssUrl: '', website: 'https://puertoprincesa.ph', region: 'MIMAROPA' },
+  { slug: 'cagayan-de-oro', name: 'Cagayan de Oro', rssUrl: 'https://cagayandeoro.gov.ph/feed/', website: 'https://cagayandeoro.gov.ph', region: 'Northern Mindanao' },
+  { slug: 'legazpi', name: 'Legazpi', rssUrl: 'https://legazpi.gov.ph/feed/', website: 'https://legazpi.gov.ph', region: 'Bicol' },
+  { slug: 'general-santos', name: 'General Santos', rssUrl: 'https://gensan.gov.ph/feed/', website: 'https://gensan.gov.ph', region: 'SOCCSKSARGEN' },
+  { slug: 'siargao', name: 'Siargao', rssUrl: '', website: 'https://siargao.gov.ph', region: 'Caraga' },
+  { slug: 'bicol-albay', name: 'Albay (Bicol Region)', rssUrl: 'https://albay.gov.ph/feed/', website: 'https://albay.gov.ph', region: 'Bicol' },
+];
+
+// National sources — broader PH news relevant to retirees/investors
+const NATIONAL_SOURCES: { name: string; url: string; lguLabel: string }[] = [
+  { name: 'PIA News', url: 'https://pia.gov.ph/feed/', lguLabel: 'national' },
+  { name: 'PEZA', url: 'https://www.peza.gov.ph/feed/', lguLabel: 'national' },
+  { name: 'DTI News', url: 'https://www.dti.gov.ph/feed/', lguLabel: 'national' },
+  { name: 'DILG News', url: 'https://dilg.gov.ph/feed/', lguLabel: 'national' },
+  { name: 'NEDA News', url: 'https://neda.gov.ph/feed/', lguLabel: 'national' },
 ];
 
 function slugify(text: string): string {
@@ -148,6 +164,46 @@ export async function handler() {
     }
   }
   
+  // Also fetch national sources
+  for (const source of NATIONAL_SOURCES) {
+    console.log(`Fetching national source: ${source.name}...`);
+    try {
+      const items = await fetchFeed(source.url);
+      let newCount = 0;
+      for (const item of items) {
+        const pk = simpleHash(item.url || `${source.name}-${item.title}`);
+        try {
+          await ddb.send(new PutCommand({
+            TableName: articlesTable,
+            Item: {
+              pk,
+              published_at: new Date(item.pubDate).toISOString(),
+              lgu: source.lguLabel,
+              title: item.title,
+              url: item.url,
+              content: item.content.substring(0, 10000),
+              summary: '',
+              source: source.name,
+              status: 'unclassified',
+              created_at: new Date().toISOString(),
+            },
+            ConditionExpression: 'attribute_not_exists(pk)',
+          }));
+          newCount++;
+        } catch (err: any) {
+          if (err.name !== 'ConditionalCheckFailedException') {
+            console.warn(`Error saving article: ${err.message}`);
+          }
+        }
+      }
+      results.push({ lgu: source.name, fetched: items.length, new: newCount });
+      console.log(`${source.name}: ${items.length} items, ${newCount} new`);
+    } catch (err: any) {
+      console.error(`Error fetching ${source.name}: ${err.message}`);
+      results.push({ lgu: source.name, fetched: 0, new: 0 });
+    }
+  }
+
   return {
     statusCode: 200,
     body: JSON.stringify({ results, totalNew: results.reduce((a, r) => a + r.new, 0) }),

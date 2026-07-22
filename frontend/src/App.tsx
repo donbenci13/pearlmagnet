@@ -1,6 +1,8 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import HomePage from './HomePage';
 import LguDetailPage from './LguDetailPage';
+import SignalsPage from './SignalsPage';
+import ComparePage from './ComparePage';
 
 function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -46,6 +48,11 @@ function Layout({ children }: { children: React.ReactNode }) {
             </span>
             Investment Signals
           </a>
+          <div style={{ display: 'flex', gap: 16 }}>
+            <Link to="/" style={{ fontSize: 14, color: '#6b7280', textDecoration: 'none' }}>Home</Link>
+            <Link to="/signals" style={{ fontSize: 14, color: '#6b7280', textDecoration: 'none' }}>Signals</Link>
+            <Link to="/compare" style={{ fontSize: 14, color: '#6b7280', textDecoration: 'none' }}>Compare</Link>
+          </div>
         </div>
       </nav>
 
@@ -74,6 +81,8 @@ export default function App() {
       <Layout>
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/signals" element={<SignalsPage />} />
+          <Route path="/compare" element={<ComparePage />} />
           <Route path="/lgus/:slug" element={<LguDetailPage />} />
         </Routes>
       </Layout>
