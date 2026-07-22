@@ -115,6 +115,38 @@ export default function LguDetailPage() {
         </div>
       </div>
 
+      {/* Schools */}
+      {profile.schools && profile.schools.length > 0 && (
+        <div style={{ marginBottom: 32 }}>
+          <div style={{ background: 'white', borderRadius: 12, border: '1px solid #e5e7eb', padding: 24 }}>
+            <h3 style={{ fontSize: 16, fontWeight: 700, color: '#111827', margin: '0 0 16px' }}>📚 Schools</h3>
+            <ul style={{ margin: 0, padding: 0, listStyle: 'none' }}>
+              {profile.schools.slice(0, 8).map((s, i) => (
+                <li key={i} style={{ padding: '4px 0', fontSize: 13, color: '#4b5563', borderBottom: '1px solid #f3f4f6' }}>
+                  {s}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      )}
+
+      {/* Entertainment */}
+      {profile.entertainment && profile.entertainment.length > 0 && (
+        <div style={{ marginBottom: 32 }}>
+          <div style={{ background: 'white', borderRadius: 12, border: '1px solid #e5e7eb', padding: 24 }}>
+            <h3 style={{ fontSize: 16, fontWeight: 700, color: '#111827', margin: '0 0 16px' }}>🎯 Things to Do</h3>
+            <ul style={{ margin: 0, padding: 0, listStyle: 'none' }}>
+              {profile.entertainment.slice(0, 8).map((e, i) => (
+                <li key={i} style={{ padding: '4px 0', fontSize: 13, color: '#4b5563', borderBottom: '1px solid #f3f4f6' }}>
+                  {e}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      )}
+
       {/* Climate & Industries */}
       <div style={{ marginBottom: 32 }}>
         <div style={{ background: 'white', borderRadius: 12, border: '1px solid #e5e7eb', padding: 24 }}>
@@ -157,7 +189,7 @@ export default function LguDetailPage() {
           </div>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            {articles.filter(a => a.isInvestmentSignal).map((article) => (
+            {articles.map((article) => (
               <a key={article.pk} href={article.url} target="_blank" rel="noopener noreferrer"
                 style={{ textDecoration: 'none', color: 'inherit' }}>
                 <div style={{

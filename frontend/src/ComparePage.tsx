@@ -4,10 +4,10 @@ import { fetchLgus, getSafetyLabel, getSuitabilityLabel, formatPopulation } from
 import type { LguProfile } from './api';
 
 const COMPARE_FIELDS = [
-  { key: 'region', label: 'Region', icon: '📍' },
-  { key: 'population', label: 'Population', icon: '👥', format: (v: number) => formatPopulation(v) },
-  { key: 'safety', label: 'Safety', icon: '🛡️', format: (v: string) => getSafetyLabel(v).label },
-  { key: 'retirement', label: 'Retirement', icon: '⭐', format: (v: string) => getSuitabilityLabel(v).label },
+  { key: 'region', label: 'Region', icon: '📍', extract: (p: LguProfile) => p.region },
+  { key: 'population', label: 'Population', icon: '👥', extract: (p: LguProfile) => formatPopulation(p.population) },
+  { key: 'safety', label: 'Safety', icon: '🛡️', extract: (p: LguProfile) => getSafetyLabel(p.safety_rating).label },
+  { key: 'retirement', label: 'Retirement', icon: '⭐', extract: (p: LguProfile) => getSuitabilityLabel(p.retirement_suitability).label },
   { key: 'rent', label: 'Rent (1BR)', icon: '🏠', extract: (p: LguProfile) => p.cost_of_living_rent_1br },
   { key: 'food', label: 'Monthly Food', icon: '🍽️', extract: (p: LguProfile) => p.cost_of_living_food },
   { key: 'airport', label: 'Airport', icon: '✈️', extract: (p: LguProfile) => p.has_international_airport ? 'International' : p.has_airport ? 'Domestic' : 'Nearest city' },
@@ -109,20 +109,9 @@ export default function ComparePage() {
                     {field.icon} {field.label}
                   </td>
                   {selectedLgus.map((lgu) => {
-                    let value: string;
-                    if (field.format && field.key === 'safety') {
-                      value = getSafetyLabel((lgu as any)[field.key]).label;
-                    } else if (field.format && field.key === 'retirement') {
-                      value = getSuitabilityLabel((lgu as any)[field.key]).label;
-                    } else if (field.format && field.key === 'population') {
-                      value = formatPopulation(lgu.population);
-                    } else if (field.extract) {
-                      value = field.extract(lgu);
-                    } else {
-                      value = String((lgu as any)[field.key] || '');
-                    }
+                    const value = field.extract ? field.extract(lgu) : String((lgu as any)[field.key] || '');
 
-                    const isGreen = value.includes('Yes') || value === 'International' || value === 'Excellent' || value === 'Very Safe' || value === 'Safe' || value === 'Very High';
+                    const isGreen = (value?.includes('Yes') || false) || value === 'International' || value === 'Excellent' || value === 'Very Safe' || value === 'Safe' || value === 'Very High';
                     const isYellow = value === 'Good' || value === 'Moderate' || value === 'Domestic';
                     const isRed = value === 'No' || value === '❌ No';
 

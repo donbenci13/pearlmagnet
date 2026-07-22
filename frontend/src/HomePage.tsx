@@ -31,7 +31,7 @@ export default function HomePage() {
           color: '#111827',
           lineHeight: 1.2,
         }}>
-          Philippine Investment Signals
+          Find Your Place in the Philippines
         </h1>
         <p style={{
           margin: '0 auto 8px',
@@ -40,16 +40,16 @@ export default function HomePage() {
           maxWidth: 600,
           lineHeight: 1.5,
         }}>
-          Curated intelligence on Philippine LGUs for retirees and investors.
+          Comprehensive retirement guides for 19 Philippine LGUs.
         </p>
         <p style={{
           margin: '0 auto 32px',
           fontSize: 15,
           color: '#9ca3af',
-          maxWidth: 500,
+          maxWidth: 520,
           lineHeight: 1.5,
         }}>
-          Safety ratings, healthcare, internet, cost of living, and real-time signals — everything you need to choose where to retire or invest in the Philippines.
+          Cost of living, healthcare, safety, internet, schools, things to do — everything you need to choose where to retire. Plus a weekly newsletter with the latest LGU developments.
         </p>
         <div style={{ display: 'flex', gap: 16, justifyContent: 'center', flexWrap: 'wrap' }}>
           <div style={{ textAlign: 'center', padding: '16px 24px', background: 'white', borderRadius: 8, border: '1px solid #e5e7eb', minWidth: 120 }}>

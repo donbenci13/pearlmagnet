@@ -27,6 +27,9 @@ export interface LguProfile {
   climate: string;
   english_proficiency: string;
   key_industries: string[];
+  schools: string[];
+  entertainment: string[];
+  photo_url: string;
   status: string;
 }
 
